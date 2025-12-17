@@ -6,15 +6,17 @@
 {% block content %}
 <h1>{{ recipe.title }}</h1>
 
-<div class="recipe-meta">
-    <p>
-        <strong>Выход:</strong> {{ recipe.yield_amount }}<br>
-        <strong>Общее время:</strong> {{ recipe.total_time_min }} мин<br>
-        {% if recipe.bake_temp_c %}
-        <strong>Температура выпечки:</strong> {{ recipe.bake_temp_c }} °C<br>
-        {% endif %}
-    </p>
-</div>
+<!-- Кнопка редактирования -->
+{% if current_user.is_authenticated and current_user.is_admin %}
+    <div style="margin: 1.5rem 0;">
+        <a href="/recipe/{{ recipe.slug }}/edit"
+           style="background: #1976d2; color: white; padding: 0.4rem 0.8rem; border-radius: 4px; text-decoration: none; font-size: 0.9rem;">
+           ✏️ Редактировать рецепт
+        </a>
+    </div>
+{% endif %}
+
+
 
 <h2>Ингредиенты</h2>
 <table>
@@ -22,7 +24,7 @@
         <tr>
             <th>Компонент</th>
             <th>Количество</th>
-            <th>Фаза</th>
+            <!-- УДАЛЕНО: <th>Фаза</th> -->
         </tr>
     </thead>
     <tbody>
@@ -30,7 +32,7 @@
         <tr>
             <td>{{ ing.name }}</td>
             <td>{{ "%.1f"|format(ing.amount) }} {{ ing.unit }}</td>
-            <td>{{ ing.phase }}</td>
+
         </tr>
         {% endfor %}
     </tbody>
@@ -42,7 +44,7 @@
     <li>
         {{ step.instruction }}
         {% if step.duration_min %} [<strong>{{ step.duration_min }} мин</strong>]{% endif %}
-        {% if step.target_temp_c %} [<strong>цель: {{ step.target_temp_c }} °C</strong>]{% endif %}
+
     </li>
 {% endfor %}
 </ol>

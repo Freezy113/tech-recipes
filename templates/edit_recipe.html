@@ -1,0 +1,223 @@
+<!-- templates/edit_recipe.html -->
+{% extends "base.html" %}
+
+{% block title %}Редактировать — {{ recipe.title }}{% endblock %}
+
+{% block content %}
+<style>
+.form-section {
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #eee;
+}
+.form-section h2 {
+    margin-bottom: 1.2rem;
+    font-size: 1.3rem;
+    color: #222;
+}
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+.item-group {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 1rem;
+    background: #fafafa;
+}
+.item-group h3 {
+    margin-top: 0;
+    font-size: 1rem;
+    color: #444;
+}
+.item-group label {
+    display: block;
+    margin: 0.5rem 0 0.3rem;
+    font-size: 0.9rem;
+    color: #555;
+}
+.item-group input,
+.item-group textarea,
+.item-group select {
+    width: 100%;
+    padding: 0.4rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 0.95rem;
+}
+.item-group textarea {
+    min-height: 60px;
+}
+.add-btn {
+    background: #1976d2;
+    color: white;
+    border: none;
+    padding: 0.4rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.95rem;
+}
+.add-btn:hover {
+    background: #1565c0;
+}
+.remove-btn {
+    background: #f44336;
+    color: white;
+    border: none;
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    margin-top: 0.5rem;
+}
+.remove-btn:hover {
+    background: #d32f2f;
+}
+.submit-btn {
+    background: #2e7d32;
+    color: white;
+    border: none;
+    padding: 0.6rem 2rem;
+    border-radius: 4px;
+    font-size: 1.1rem;
+    cursor: pointer;
+}
+.submit-btn:hover {
+    background: #1b5e20;
+}
+</style>
+
+<h1>Редактировать рецепт: {{ recipe.title }}</h1>
+
+<form method="post" enctype="multipart/form-data">
+
+    <!-- Общая информация -->
+    <div class="form-section">
+        <h2>Общая информация</h2>
+        <div class="form-grid">
+            <div>
+                <label>Название</label>
+                <input type="text" name="title" value="{{ recipe.title }}" required>
+            </div>
+            <div>
+                <label>Slug</label>
+                <input type="text" name="slug" value="{{ recipe.slug }}" required>
+            </div>
+            <div>
+                <label>Описание</label>
+                <textarea name="description" maxlength="300">{% if recipe.description %}{{ recipe.description }}{% endif %}</textarea>
+            </div>
+            {% if recipe.image %}
+            <div>
+                <label>Текущая обложка</label>
+                <img src="{{ url_for('static', filename=recipe.image) }}"
+                     style="width: 100px; height: auto; border: 1px solid #ccc;">
+            </div>
+            {% endif %}
+            <div>
+                <label>Новая обложка (опционально)</label>
+                <input type="file" name="recipe_image" accept="image/*">
+            </div>
+        </div>
+    </div>
+
+    <!-- Ингредиенты -->
+    <div class="form-section">
+        <h2>Ингредиенты</h2>
+        <div id="ingredients">
+            {% for ing in recipe.ingredients %}
+            <div class="item-group">
+                <h3>Ингредиент {{ loop.index }}</h3>
+                <label>Название</label>
+                <input type="text" name="ingredient-name" value="{{ ing.name }}" required>
+                <label>Количество</label>
+                <input type="number" step="0.1" name="ingredient-amount" value="{{ ing.amount }}" required>
+                <label>Единица</label>
+                <select name="ingredient-unit">
+                    <option value="г" {% if ing.unit == 'г' %}selected{% endif %}>г</option>
+                    <option value="мл" {% if ing.unit == 'мл' %}selected{% endif %}>мл</option>
+                    <option value="шт" {% if ing.unit == 'шт' %}selected{% endif %}>шт</option>
+                </select>
+                <button type="button" class="remove-btn" onclick="this.closest('.item-group').remove()">×</button>
+            </div>
+            {% endfor %}
+        </div>
+        <button type="button" class="add-btn" onclick="addIngredient()">+ Добавить ингредиент</button>
+    </div>
+
+    <!-- Шаги -->
+    <div class="form-section">
+        <h2>Шаги</h2>
+        <div id="steps">
+            {% for step in recipe.steps|sort(attribute='step_number') %}
+            <div class="item-group">
+                <h3>Шаг {{ loop.index }}</h3>
+                <label>Инструкция</label>
+                <textarea name="step-instruction" required>{{ step.instruction }}</textarea>
+                <label>Время (мин)</label>
+                <input type="number" name="step-duration" value="{% if step.duration_min %}{{ step.duration_min }}{% endif %}" placeholder="0">
+                {% if step.image %}
+                <label>Текущее изображение</label>
+                <img src="{{ url_for('static', filename=step.image) }}"
+                     style="width: 100px; height: auto; border: 1px solid #ccc;">
+                {% endif %}
+                <label>Новое изображение (опционально)</label>
+                <input type="file" name="step-image" accept="image/*">
+                <button type="button" class="remove-btn" onclick="this.closest('.item-group').remove()">×</button>
+            </div>
+            {% endfor %}
+        </div>
+        <button type="button" class="add-btn" onclick="addStep()">+ Добавить шаг</button>
+    </div>
+
+    <button type="submit" class="submit-btn">Сохранить изменения</button>
+</form>
+
+<script>
+let ingredientCounter = {{ recipe.ingredients|length or 1 }};
+let stepCounter = {{ recipe.steps|length or 1 }};
+
+function addIngredient() {
+    ingredientCounter++;
+    const container = document.getElementById('ingredients');
+    const div = document.createElement('div');
+    div.className = 'item-group';
+    div.innerHTML = `
+        <h3>Ингредиент ${ingredientCounter}</h3>
+        <label>Название</label>
+        <input type="text" name="ingredient-name" required>
+        <label>Количество</label>
+        <input type="number" step="0.1" name="ingredient-amount" required>
+        <label>Единица</label>
+        <select name="ingredient-unit">
+            <option value="г">г</option>
+            <option value="мл">мл</option>
+            <option value="шт">шт</option>
+        </select>
+        <button type="button" class="remove-btn" onclick="this.closest('.item-group').remove()">×</button>
+    `;
+    container.appendChild(div);
+}
+
+function addStep() {
+    stepCounter++;
+    const container = document.getElementById('steps');
+    const div = document.createElement('div');
+    div.className = 'item-group';
+    div.innerHTML = `
+        <h3>Шаг ${stepCounter}</h3>
+        <label>Инструкция</label>
+        <textarea name="step-instruction" required placeholder="Опишите действие"></textarea>
+        <label>Время (мин)</label>
+        <input type="number" name="step-duration" placeholder="0">
+        <label>Изображение (опционально)</label>
+        <input type="file" name="step-image" accept="image/*">
+        <button type="button" class="remove-btn" onclick="this.closest('.item-group').remove()">×</button>
+    `;
+    container.appendChild(div);
+}
+</script>
+{% endblock %}

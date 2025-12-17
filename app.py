@@ -1,4 +1,7 @@
 # app.py
+import os
+basedir = os.path.abspath(os.path.dirname(__file__))
+
 from flask import Flask, render_template, redirect, request
 from models import db, Recipe, Ingredient, Step, User
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
@@ -6,10 +9,11 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import DataRequired
 from forms import LoginForm
-from recipes import init_db, handle_add_recipe  # ← ИМПОРТ ЛОГИКИ
+from recipes import init_db, handle_add_recipe,handle_edit_recipe  # ← ИМПОРТ ЛОГИКИ
+
 
 import os
-
+basedir = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
 app.secret_key = 'tech-recipes-secret-change-in-prod'
 
@@ -74,6 +78,23 @@ def add_recipe():
     if request.method == 'POST':
         return handle_add_recipe()  # ← ВСЯ ЛОГИКА В ДРУГОМ ФАЙЛЕ
     return render_template('add_recipe.html')
+
+
+@app.route('/recipe/<slug>/edit', methods=['GET', 'POST'])
+@login_required
+def edit_recipe(slug):
+    if not current_user.is_admin:
+        return redirect(f'/recipe/{slug}')
+    recipe = Recipe.query.filter_by(slug=slug).first_or_404()
+    # Принудительно загружаем связи (на всякий случай)
+    _ = recipe.ingredients  # это триггерит загрузку
+    _ = recipe.steps  # это триггерит загрузку
+
+    if request.method == 'POST':
+        return handle_edit_recipe(recipe)  # ← обработка сохранения
+
+    # GET: показать форму с данными
+    return render_template('edit_recipe.html', recipe=recipe)
 
 # === Запуск ===
 if __name__ == '__main__':
