@@ -25,7 +25,7 @@ class Ingredient(db.Model):
     name = db.Column(db.String(100), nullable=False)
     amount = db.Column(db.Float, nullable=False)
     unit = db.Column(db.String(10), nullable=False)
-    phase = db.Column(db.String(30), default="Основа")
+
 
     def __repr__(self):
         return f'<Ingredient {self.name}>'
@@ -37,7 +37,6 @@ class Step(db.Model):
     step_number = db.Column(db.Integer, nullable=False)
     instruction = db.Column(db.Text, nullable=False)
     duration_min = db.Column(db.Integer, nullable=True)
-    target_temp_c = db.Column(db.Integer, nullable=True)
     image = db.Column(db.String(200), nullable=True)  # путь: 'step_images/filename.jpg'
 
     def __repr__(self):

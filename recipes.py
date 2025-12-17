@@ -86,15 +86,14 @@ def handle_add_recipe():
         request.form.getlist('ingredient-name'),
         request.form.getlist('ingredient-amount'),
         request.form.getlist('ingredient-unit'),
-        request.form.getlist('ingredient-phase')
+
     ):
         if name.strip():
             db.session.add(Ingredient(
                 recipe_id=recipe.id,
                 name=name.strip(),
                 amount=float(amount or 0),
-                unit=unit or 'г',
-                phase=phase or 'Основа'
+                unit=unit or 'г'
             ))
 
     # Шаги
@@ -118,7 +117,6 @@ def handle_add_recipe():
                 step_number=i+1,
                 instruction=instr.strip(),
                 duration_min=int(durations[i]) if durations[i] and durations[i].isdigit() else None,
-                target_temp_c=int(temps[i]) if temps[i] and temps[i].isdigit() else None,
                 image=image_filename
             ))
 
