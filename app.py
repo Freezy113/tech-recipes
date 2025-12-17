@@ -87,7 +87,11 @@ def add_recipe():
         if Recipe.query.filter_by(slug=slug).first():
             return f"Slug '{slug}' уже занят", 400
 
-        recipe = Recipe(title=title, slug=slug)
+        recipe = Recipe(
+            title=title,
+            slug=slug,
+            description=request.form.get('description', '').strip() or None
+        )
 
         # Обработка обложки рецепта
         recipe_image = request.files.get('recipe_image')
@@ -151,6 +155,7 @@ def init_db():
             recipe = Recipe(
                 title="Классический крем-брюле",
                 slug="creme-brulee",
+                description="Французский десерт с нежным заварным кремом и хрустящей карамельной корочкой. Требует точного контроля температуры при выпечке и охлаждении."
 
             )
             db.session.add(recipe)

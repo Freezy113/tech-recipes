@@ -4,26 +4,108 @@
 {% block title %}ТехРецепты — Главная{% endblock %}
 
 {% block content %}
-<h1>ТехРецепты</h1>
+<style>
+.hero {
+    max-width: 700px;
+    margin: 3rem auto;
+    text-align: center;
+}
 
-<p>
-    Это сборник кулинарных процедур, оформленных как технические спецификации.
-</p>
+.hero h1 {
+    font-size: 2.4rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    letter-spacing: -0.5px;
+    color: #1a1a1a;
+}
 
-<h2>Принципы</h2>
-<ul>
-    <li><strong>Точность</strong> — только измеримые величины: граммы, миллилитры, градусы, минуты.</li>
-    <li><strong>Воспроизводимость</strong> — каждый шаг описан так, чтобы результат был одинаковым у любого исполнителя.</li>
-    <li><strong>Без субъективности</strong> — никаких «по вкусу», «на глаз» или «добавьте по желанию».</li>
-</ul>
+.hero p.subtitle {
+    font-size: 1.2rem;
+    color: #4a4a4a;
+    margin-bottom: 2.5rem;
+    line-height: 1.6;
+}
 
-<h2>Для кого?</h2>
-<p>
-    Для инженеров, химиков, программистов, лаборантов и всех, кто считает готовку процессом,
-    требующим стандартизации, контроля и документирования.
-</p>
+.principles {
+    background: #f8f9fa;
+    padding: 2rem;
+    border-radius: 8px;
+    margin: 3rem 0;
+    text-align: left;
+}
 
-<p>
-    Все рецепты проходят верификацию на соответствие техническим критериям.
+.principles h2 {
+    margin-bottom: 1.2rem;
+    font-size: 1.4rem;
+    color: #222;
+}
+
+.principles ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.principles li {
+    padding: 0.7rem 0;
+    border-bottom: 1px solid #eaeaea;
+    display: flex;
+    gap: 0.8rem;
+}
+
+.principles li:last-child {
+    border-bottom: none;
+}
+
+.principles li::before {
+    content: "✓";
+    color: #2e7d32;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.cta-button {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.7rem 1.8rem;
+    background: #1976d2;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: 500;
+    transition: background 0.2s;
+}
+
+.cta-button:hover {
+    background: #1565c0;
+    text-decoration: none;
+}
+
+@media (max-width: 600px) {
+    .hero h1 { font-size: 1.8rem; }
+    .hero p.subtitle { font-size: 1rem; }
+}
+</style>
+
+<div class="hero">
+    <h1>ТехРецепты</h1>
+    <p class="subtitle">Кулинарные процедуры как технические спецификации: точность, воспроизводимость, никаких «на глаз».</p>
+
+    <a href="/recipes" class="cta-button">→ Перейти к рецептам</a>
+</div>
+
+<div class="principles">
+    <h2>Принципы проекта</h2>
+    <ul>
+        <li>Все количества указаны в измеримых единицах: граммы, миллилитры, штуки.</li>
+        <li>Все температуры — в градусах Цельсия с точностью до ±1°C.</li>
+        <li>Все временные интервалы — в минутах или секундах, без приближений.</li>
+        <li>Каждый шаг — воспроизводимая операция без субъективных оценок.</li>
+        <li>Никаких фраз вроде «по вкусу», «до золотистого цвета» или «добавьте по желанию».</li>
+    </ul>
+</div>
+
+<p style="text-align: center; color: #666; margin-top: 3rem; font-size: 0.9rem;">
+    Проект для инженеров, химиков, программистов и всех, кто считает кухню лабораторией.
 </p>
 {% endblock %}
