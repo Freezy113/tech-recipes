@@ -1,0 +1,130 @@
+<!-- templates/base.html -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}ТехРецепты{% endblock %}</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+            background: #f9f9f9;
+            color: #222;
+            line-height: 1.5;
+        }
+
+        /* Шапка */
+        header {
+            background: #1a1a1a;
+            color: #f0f0f0;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        header h1 {
+            font-size: 1.4rem;
+            font-weight: 500;
+        }
+        header a {
+            color: #4dc7ec;
+            text-decoration: none;
+        }
+
+        /* Основной контейнер */
+        .container {
+            display: flex;
+            min-height: calc(100vh - 60px);
+        }
+
+        /* Левое меню */
+        .sidebar {
+            width: 220px;
+            background: #2d2d2d;
+            padding: 1.5rem 1rem;
+            color: #ccc;
+        }
+        .sidebar h2 {
+            font-size: 1rem;
+            margin-bottom: 1.2rem;
+            color: #66c2ff;
+        }
+        .sidebar ul {
+            list-style: none;
+        }
+        .sidebar li {
+            margin-bottom: 0.6rem;
+        }
+        .sidebar a {
+            color: #ddd;
+            text-decoration: none;
+            font-size: 0.95rem;
+            padding: 0.3rem 0.5rem;
+            border-radius: 3px;
+            display: block;
+        }
+        .sidebar a:hover, .sidebar a.active {
+            background: #3a3a3a;
+            color: #fff;
+        }
+
+        /* Основной контент */
+        .content {
+            flex: 1;
+            padding: 2rem;
+            max-width: 900px;
+        }
+
+        /* Стили для страницы рецепта (оставим как были) */
+        .recipe-meta { background: #f0f0f0; padding: 1rem; border-radius: 4px; margin: 1.5rem 0; }
+        table { width: 100%; border-collapse: collapse; margin: 1.2rem 0; }
+        th, td { text-align: left; padding: 0.5rem; border-bottom: 1px solid #eee; }
+        ol { padding-left: 1.4rem; margin: 1.2rem 0; }
+        ol li { margin-bottom: 1rem; }
+        img { max-width: 100%; height: auto; margin-top: 0.5rem; border: 1px solid #eee; }
+    </style>
+</head>
+<body>
+
+    <!-- Шапка -->
+<header>
+    <h1><a href="/">ТехРецепты</a></h1>
+    <div style="display: flex; gap: 1rem; align-items: center;">
+
+        <!-- Кнопка "Добавить рецепт" — только для админа -->
+        {% if current_user.is_authenticated and current_user.is_admin %}
+            <a href="/recipe/new" style="background: #4caf50; color: white; padding: 0.4rem 0.8rem; border-radius: 4px; text-decoration: none; font-size: 0.9rem;">Добавить рецепт</a>
+        {% endif %}
+
+        <!-- Ссылка на вход/выход -->
+        {% if current_user.is_authenticated %}
+            <span style="color: #aaa;">{{ current_user.username }}</span>
+            <a href="/logout" style="color: #f44336; text-decoration: none; font-size: 0.9rem;">Выйти</a>
+        {% else %}
+            <a href="/login" style="color: #4dc7ec; text-decoration: none; font-size: 0.9rem;">Войти</a>
+        {% endif %}
+    </div>
+</header>
+
+    <!-- Основной контейнер -->
+    <div class="container">
+        <!-- Боковое меню -->
+        <nav class="sidebar">
+            <h2>Навигация</h2>
+            <ul>
+                <li><a href="/">Главная</a></li>
+                <li><a href="/recipes">Рецепты</a></li>
+                <!-- Сюда позже добавим: "Все рецепты", "О проекте" и т.д. -->
+            </ul>
+        </nav>
+
+        <!-- Контент (меняется на каждой странице) -->
+        <main class="content">
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+
+</body>
+</html>

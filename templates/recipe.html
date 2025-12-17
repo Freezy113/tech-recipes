@@ -1,0 +1,51 @@
+<!-- templates/recipe.html -->
+{% extends "base.html" %}
+
+{% block title %}{{ recipe.title }} — ТехРецепты{% endblock %}
+
+{% block content %}
+<h1>{{ recipe.title }} — v{{ recipe.version }}</h1>
+
+<div class="recipe-meta">
+    <p>
+        <strong>Выход:</strong> {{ recipe.yield_amount }}<br>
+        <strong>Общее время:</strong> {{ recipe.total_time_min }} мин<br>
+        {% if recipe.bake_temp_c %}
+        <strong>Температура выпечки:</strong> {{ recipe.bake_temp_c }} °C<br>
+        {% endif %}
+    </p>
+</div>
+
+<h2>Ингредиенты</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Компонент</th>
+            <th>Количество</th>
+            <th>Фаза</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for ing in ingredients %}
+        <tr>
+            <td>{{ ing.name }}</td>
+            <td>{{ "%.1f"|format(ing.amount) }} {{ ing.unit }}</td>
+            <td>{{ ing.phase }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h2>Процедура</h2>
+<ol>
+{% for step in steps %}
+    <li>
+        {{ step.instruction }}
+        {% if step.duration_min %} [<strong>{{ step.duration_min }} мин</strong>]{% endif %}
+        {% if step.target_temp_c %} [<strong>цель: {{ step.target_temp_c }} °C</strong>]{% endif %}
+    </li>
+{% endfor %}
+</ol>
+
+<p><a href="/">← Назад к списку рецептов</a></p>
+{% endblock %}

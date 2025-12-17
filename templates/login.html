@@ -1,0 +1,25 @@
+<!-- templates/login.html -->
+{% extends "base.html" %}
+
+{% block title %}Вход — ТехРецепты{% endblock %}
+
+{% block content %}
+<h1>Вход</h1>
+
+{% if error %}
+<p style="color: #d32f2f;">{{ error }}</p>
+{% endif %}
+
+<form method="post">
+    {{ form.hidden_tag() }}
+    <p>
+        {{ form.username.label }}<br>
+        {{ form.username(size=30) }}
+    </p>
+    <p>
+        {{ form.password.label }}<br>
+        {{ form.password(size=30) }}
+    </p>
+    <p>{{ form.submit() }}</p>
+</form>
+{% endblock %}
