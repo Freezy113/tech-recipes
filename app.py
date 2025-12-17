@@ -96,9 +96,15 @@ def add_recipe():
         # Обработка обложки рецепта
         recipe_image = request.files.get('recipe_image')
         if recipe_image and recipe_image.filename:
+            upload_folder = os.path.join(basedir, 'static', 'uploads')
+            os.makedirs(upload_folder, exist_ok=True)
+
             filename = secure_filename(f"{slug}_cover_{recipe_image.filename}")
-            recipe_image.save(f"static/uploads/{filename}")
-            recipe.image = f"uploads/{filename}"  # сохраняем путь
+            filepath = os.path.join(upload_folder, filename)
+            recipe_image.save(filepath)
+
+            # ←←← ВАЖНО: ПУТЬ ДОЛЖЕН БЫТЬ ОТНОСИТЕЛЬНЫМ К static/
+            recipe.image = f"uploads/{filename}"
 
         db.session.add(recipe)
         db.session.commit()
@@ -124,13 +130,16 @@ def add_recipe():
         durations = request.form.getlist('step-duration') or [None]*len(instructions)
         temps = request.form.getlist('step-temp') or [None]*len(instructions)
         images = request.files.getlist('step-image')
+        step_upload_folder = os.path.join(basedir, 'static', 'step_images')
+        os.makedirs(step_upload_folder, exist_ok=True)
 
         for i, instr in enumerate(instructions):
             if instr.strip():
                 image_filename = None
                 if i < len(images) and images[i].filename:
-                    filename = secure_filename(f"{slug}_step{i+1}_{images[i].filename}")
-                    images[i].save(f"static/step_images/{filename}")
+                    filename = secure_filename(f"{slug}_step{i + 1}_{images[i].filename}")
+                    # ←←← СОХРАНЯЙТЕ В ПОЛНЫЙ ПУТЬ:
+                    images[i].save(os.path.join(step_upload_folder, filename))
                     image_filename = f"step_images/{filename}"
 
                 db.session.add(Step(

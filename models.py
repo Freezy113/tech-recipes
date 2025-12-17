@@ -12,6 +12,7 @@ class Recipe(db.Model):
     title = db.Column(db.String(120), nullable=False)
     slug = db.Column(db.String(120), unique=True, nullable=False)
     description = db.Column(db.String(300), nullable=True)
+    image = db.Column(db.String(200), nullable=True)  # ← ЭТА СТРОКА ОБЯЗАТЕЛЬНА
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     def __repr__(self):
@@ -41,6 +42,7 @@ class Step(db.Model):
 
     def __repr__(self):
         return f'<Step {self.step_number}>'
+
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)

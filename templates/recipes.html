@@ -10,24 +10,37 @@
 
 <ul style="list-style: none; padding: 0; margin-top: 1.5rem;">
 {% for r in recipes %}
-    <li style="margin-bottom: 1.2rem; padding: 0.8rem 0; border-bottom: 1px solid #eee;">
-        <a href="/recipe/{{ r.slug }}" style="font-size: 1.2rem; color: #0066cc; text-decoration: none;">
+    <li style="margin-bottom: 1.5rem; padding: 0.8rem 0; border-bottom: 1px solid #eee;">
+        <!-- Название -->
+        <a href="/recipe/{{ r.slug }}" style="font-size: 1.2rem; color: #0066cc; text-decoration: none; display: block; margin-bottom: 0.6rem;">
             {{ r.title }}
         </a>
 
-        <!-- Краткое описание (если есть) -->
-        {% if r.description %}
-            <div style="margin: 0.4rem 0 0.6rem 0; color: #444; font-size: 0.95rem; line-height: 1.4;">
-                {{ r.description }}
-            </div>
-        {% endif %}
+        <!-- Фотка + Описание в строку -->
+        <!-- Фотка + Описание в строку -->
+<div style="display: flex; gap: 1rem; align-items: center;">
+    <!-- Миниатюра -->
+    {% if r.image %}
+        <img src="{{ url_for('static', filename=r.image) }}"
+             alt="{{ r.title }}"
+             style="width: 100px; height: 100px; object-fit: cover; border-radius: 4px; flex-shrink: 0;">
+    {% else %}
+        <div style="width: 100px; height: 100px; background: #f0f0f0; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #888; font-size: 0.8rem; text-align: center;">
+            Нет<br>обложки
+        </div>
+    {% endif %}
 
-        <!-- Изображение (если есть) -->
-        {% if r.image %}
-            <img src="{{ url_for('static', filename=r.image) }}"
-                 alt="{{ r.title }}"
-                 style="width: 100px; height: auto; margin-top: 0.4rem; border-radius: 3px; object-fit: cover;">
-        {% endif %}
+    <!-- Описание -->
+    {% if r.description %}
+        <div style="color: #444; font-size: 0.95rem; line-height: 1.5; flex: 1; min-width: 0;">
+            {{ r.description }}
+        </div>
+    {% else %}
+        <div style="color: #888; font-size: 0.95rem; font-style: italic; flex: 1;">
+            Нет описания.
+        </div>
+    {% endif %}
+</div>
     </li>
 {% endfor %}
 </ul>
